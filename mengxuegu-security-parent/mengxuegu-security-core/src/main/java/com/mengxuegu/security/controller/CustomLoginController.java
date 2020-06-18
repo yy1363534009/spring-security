@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
+ * 自定义security拦截跳转请求的处理器
  * @Auther: yuyue
  * @create 2020/6/14 22:41
  */

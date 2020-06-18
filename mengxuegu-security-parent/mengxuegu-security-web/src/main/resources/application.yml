@@ -18,4 +18,4 @@ mengxuegu:
         - /dist/**
         - /modules/**
         - /plugins/**
-      loginType: REDIRECT
+      loginType:  # 定义成功失败处理器返回的方式

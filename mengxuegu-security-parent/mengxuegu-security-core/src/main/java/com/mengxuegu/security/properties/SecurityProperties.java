@@ -4,6 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
+ * 实现springboot的全局可配置
  * @Auther: yuyue
  * @create 2020/6/16 10:08
  */

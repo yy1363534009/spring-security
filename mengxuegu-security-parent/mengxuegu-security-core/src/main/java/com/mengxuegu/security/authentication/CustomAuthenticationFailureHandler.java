@@ -15,12 +15,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
+ * 自定义失败处理器
  * @Auther: yuyue
  * @create 2020/6/17 18:20
  */
 @Component("customAuthenticationFailureHandler")
 //public class CustomAuthenticationFailureHandler implements AuthenticationFailureHandler {  //返回json字符串，无法返回上一个请求，所以用下面的代替
-public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
+public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler { //继承AuthenticationFailureHandler的实现类
 
     @Autowired
     private SecurityProperties securityProperties;

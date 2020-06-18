@@ -17,12 +17,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
+ * 自定义成功处理器
  * @Auther: yuyue
  * @create 2020/6/17 18:09
  */
 @Component("customAuthenticationSuccessHandler")
 //public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
-public class CustomAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
+public class CustomAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {//继承AuthenticationSuccessHandler的实现类
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 

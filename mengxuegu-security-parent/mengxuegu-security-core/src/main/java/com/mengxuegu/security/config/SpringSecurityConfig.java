@@ -18,6 +18,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 /**
+ * springsecurity核心配置累 主要继承WebSecurityConfigurerAdapter
  * @Auther: yuyue
  * @create 2020/6/14 13:04
  */
@@ -85,12 +86,12 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         //http.httpBasic() //httpBasic方式
         http.formLogin() //httpForm方式
-                .loginPage(securityProperties.getAuthentication().getLoginPage())
-                .loginProcessingUrl(securityProperties.getAuthentication().getLoginProcessingUrl())//login.html的请求
+                .loginPage(securityProperties.getAuthentication().getLoginPage())//请求页面URL
+                .loginProcessingUrl(securityProperties.getAuthentication().getLoginProcessingUrl())//login.html表单的请求URL
                 .usernameParameter(securityProperties.getAuthentication().getUsernameParameter())//默认username，login.html的用户名参数
                 .passwordParameter(securityProperties.getAuthentication().getPasswordParameter())//默认password，login.html的密码参数
-                .successHandler(customAuthenticationSuccessHandler)
-                .failureHandler(customAuthenticationFailureHandler)
+                .successHandler(customAuthenticationSuccessHandler) //定义自定义成功处理器 实现AuthenticationSuccessHandler接口
+                .failureHandler(customAuthenticationFailureHandler) //定义自定义失败处理器 实现AuthenticationFailureHandler接口
                 .and()
                 .authorizeRequests() // 认证请求
                 .antMatchers("/login/page").permitAll() //放行/login/page,静态资源一同被拦截。否则出现一直重定向
