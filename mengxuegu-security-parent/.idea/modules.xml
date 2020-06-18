@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/mengxuegu-security-base/mengxuegu-security-base.iml" filepath="$PROJECT_DIR$/mengxuegu-security-base/mengxuegu-security-base.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mengxuegu-security-core/mengxuegu-security-core.iml" filepath="$PROJECT_DIR$/mengxuegu-security-core/mengxuegu-security-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/mengxuegu-security-parent.iml" filepath="$PROJECT_DIR$/.idea/mengxuegu-security-parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mengxuegu-security-web/mengxuegu-security-web.iml" filepath="$PROJECT_DIR$/mengxuegu-security-web/mengxuegu-security-web.iml" />
+    </modules>
+  </component>
+</project>

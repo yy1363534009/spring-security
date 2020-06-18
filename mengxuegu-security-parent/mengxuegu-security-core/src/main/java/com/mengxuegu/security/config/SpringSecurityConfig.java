@@ -1,7 +1,9 @@
 package com.mengxuegu.security.config;
 
+import com.mengxuegu.security.properties.SecurityProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -9,8 +11,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 /**
  * @Auther: yuyue
@@ -20,10 +25,23 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity  //开启springsecurity过滤器链
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    Logger logger = LoggerFactory.getLogger(getClass());
+    private Logger logger = LoggerFactory.getLogger(getClass());
+
+    @Autowired
+    private UserDetailsService customUserDetailsServic;
+
+    @Autowired
+    private SecurityProperties securityProperties;
+
+    @Autowired
+    private AuthenticationSuccessHandler customAuthenticationSuccessHandler;
+
+    @Autowired
+    private AuthenticationFailureHandler customAuthenticationFailureHandler;
 
     /**
      * 密码加密
+     *
      * @return
      */
     @Bean
@@ -41,11 +59,14 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        //用户信息存储在内存中，密码必须加密，否则报错：There is no PasswordEncoder mapped for the id "null"
-        String password = passwordEncoder().encode("1234");
-        //密码加密形式：（用户输入密码+颜值（随机数））在进行加密
-        logger.info("加密之后存储的密码:" + password);
-        auth.inMemoryAuthentication().withUser("mengxuegu").password(password).authorities("ADMIN");
+//        //用户信息存储在内存中，密码必须加密，否则报错：There is no PasswordEncoder mapped for the id "null"
+//        String password = passwordEncoder().encode("1234");
+//        //密码加密形式：（用户输入密码+颜值（随机数））在进行加密
+//        logger.info("加密之后存储的密码:" + password);
+//        auth.inMemoryAuthentication().withUser("mengxuegu").password(password).authorities("ADMIN");
+
+        //用户信息存储在数据库中
+        auth.userDetailsService(customUserDetailsServic);
     }
 
     /**
@@ -64,10 +85,12 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         //http.httpBasic() //httpBasic方式
         http.formLogin() //httpForm方式
-                .loginPage("/login/page")
-                .loginProcessingUrl("/login/form")//login.html的请求
-                .usernameParameter("name")//默认username，login.html的用户名参数
-                .passwordParameter("pwd")//默认password，login.html的密码参数
+                .loginPage(securityProperties.getAuthentication().getLoginPage())
+                .loginProcessingUrl(securityProperties.getAuthentication().getLoginProcessingUrl())//login.html的请求
+                .usernameParameter(securityProperties.getAuthentication().getUsernameParameter())//默认username，login.html的用户名参数
+                .passwordParameter(securityProperties.getAuthentication().getPasswordParameter())//默认password，login.html的密码参数
+                .successHandler(customAuthenticationSuccessHandler)
+                .failureHandler(customAuthenticationFailureHandler)
                 .and()
                 .authorizeRequests() // 认证请求
                 .antMatchers("/login/page").permitAll() //放行/login/page,静态资源一同被拦截。否则出现一直重定向
@@ -77,13 +100,12 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
      * 针对静态资源进行放行
+     *
      * @param web
      */
     @Override
     public void configure(WebSecurity web) {
-        web.ignoring().antMatchers("/dist/**","/modules/**","/plugins/**");
+        web.ignoring().antMatchers(securityProperties.getAuthentication().getStaticPaths());
     }
-
-    
 
 }
