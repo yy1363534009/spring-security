@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
+ * 校验用户名密码业务
  * @Auther: yuyue
  * @create 2020/6/16 22:52
  */
@@ -40,6 +41,7 @@ public class CustomUserDetailsServic implements UserDetailsService {
         List<GrantedAuthority> grantedAuthorities = AuthorityUtils.commaSeparatedStringToAuthorityList("ADMIN");
         //3.封装用户信息
 
+        //交给User（它实现了UserDetails）可以帮助我们自动校验以及为用户设置权限
         return new User(userName, password, grantedAuthorities);
 
     }
