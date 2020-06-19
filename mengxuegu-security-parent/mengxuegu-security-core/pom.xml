@@ -31,10 +31,10 @@
        </dependency>
 
         <!--图形验证码-->
-<!--        <dependency>
+        <dependency>
             <groupId>com.github.penggle</groupId>
             <artifactId>kaptcha</artifactId>
-        </dependency>-->
+        </dependency>
         
         <!--数据库依赖-->
 <!--        <dependency>

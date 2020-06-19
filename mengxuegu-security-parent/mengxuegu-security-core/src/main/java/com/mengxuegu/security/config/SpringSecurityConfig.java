@@ -1,5 +1,6 @@
 package com.mengxuegu.security.config;
 
+import com.mengxuegu.security.authentication.code.ImageCodeValidateFilter;
 import com.mengxuegu.security.properties.SecurityProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,9 +17,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * springsecurity核心配置累 主要继承WebSecurityConfigurerAdapter
+ *
  * @Auther: yuyue
  * @create 2020/6/14 13:04
  */
@@ -28,17 +31,35 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
+    /*
+    用户名密码校验服务
+     */
     @Autowired
     private UserDetailsService customUserDetailsServic;
 
+    /*
+    springboot的全局配置
+     */
     @Autowired
     private SecurityProperties securityProperties;
 
+    /*
+    自定义登录成功处理器
+     */
     @Autowired
     private AuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
+    /*
+    自定义登录失败处理器
+     */
     @Autowired
     private AuthenticationFailureHandler customAuthenticationFailureHandler;
+
+    /*
+    图形验证码校验（校验成功后在校验用户名密码校验）
+     */
+    @Autowired
+    private ImageCodeValidateFilter imageCodeValidateFilter;
 
     /**
      * 密码加密
@@ -84,8 +105,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        //http.httpBasic() //httpBasic方式
-        http.formLogin() //httpForm方式
+        //http.httpBasic() //httpBasic方式 模态框登录页面，无法自定义登录页面
+        http.addFilterBefore(imageCodeValidateFilter, UsernamePasswordAuthenticationFilter.class)//在用户名密码校验前加上徒刑验证码校验
+                .formLogin() //httpForm方式
                 .loginPage(securityProperties.getAuthentication().getLoginPage())//请求页面URL
                 .loginProcessingUrl(securityProperties.getAuthentication().getLoginProcessingUrl())//login.html表单的请求URL
                 .usernameParameter(securityProperties.getAuthentication().getUsernameParameter())//默认username，login.html的用户名参数
@@ -94,7 +116,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .failureHandler(customAuthenticationFailureHandler) //定义自定义失败处理器 实现AuthenticationFailureHandler接口
                 .and()
                 .authorizeRequests() // 认证请求
-                .antMatchers("/login/page").permitAll() //放行/login/page,静态资源一同被拦截。否则出现一直重定向
+                .antMatchers(securityProperties.getAuthentication().getLoginPage(), "/code/image").permitAll() //放行/login/page,静态资源一同被拦截。否则出现一直重定向，放行验证码请求uri否则无法加载验证码图片
                 .anyRequest().authenticated() // 所有进入应用的HTTP请求都要进行认证，授权
         ;
     }
