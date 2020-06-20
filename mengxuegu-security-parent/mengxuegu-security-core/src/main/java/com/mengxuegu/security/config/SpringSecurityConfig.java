@@ -18,6 +18,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+
+import javax.sql.DataSource;
 
 /**
  * springsecurity核心配置累 主要继承WebSecurityConfigurerAdapter
@@ -61,6 +64,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private ImageCodeValidateFilter imageCodeValidateFilter;
 
+    @Autowired
+    private DataSource dataSource;
+
     /**
      * 密码加密
      *
@@ -69,6 +75,18 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    /**
+     * rememberMe保存用户信息到数据库
+     * @return
+     */
+    @Bean
+    public JdbcTokenRepositoryImpl jdbcTokenRepository() {
+        JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();
+        jdbcTokenRepository.setDataSource(dataSource);
+//        jdbcTokenRepository.setCreateTableOnStartup(true);//自动创建rememberMe功能的数据库表，第一次需要创建，第二次需要关闭
+        return jdbcTokenRepository;
     }
 
     /**
@@ -116,8 +134,14 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .failureHandler(customAuthenticationFailureHandler) //定义自定义失败处理器 实现AuthenticationFailureHandler接口
                 .and()
                 .authorizeRequests() // 认证请求
-                .antMatchers(securityProperties.getAuthentication().getLoginPage(), "/code/image").permitAll() //放行/login/page,静态资源一同被拦截。否则出现一直重定向，放行验证码请求uri否则无法加载验证码图片
+                //放行/login/page,静态资源一同被拦截。否则出现一直重定向，放行验证码请求uri否则无法加载验证码图片
+                .antMatchers(securityProperties.getAuthentication().getLoginPage(), "/code/image").permitAll()
                 .anyRequest().authenticated() // 所有进入应用的HTTP请求都要进行认证，授权
+                // 下面添加remember-me功能
+                .and()
+                .rememberMe()//记住我功能
+                .tokenRepository(jdbcTokenRepository())//保存用户的登录信息到数据库
+                .tokenValiditySeconds(60 * 60 * 24 * 7)//记住我的有效时长（一周）
         ;
     }
 
