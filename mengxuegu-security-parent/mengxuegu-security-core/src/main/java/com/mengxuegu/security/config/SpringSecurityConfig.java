@@ -135,7 +135,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests() // 认证请求
                 //放行/login/page,静态资源一同被拦截。否则出现一直重定向，放行验证码请求uri否则无法加载验证码图片
-                .antMatchers(securityProperties.getAuthentication().getLoginPage(), "/code/image").permitAll()
+                .antMatchers(securityProperties.getAuthentication().getLoginPage(), "/code/image","/mobile/page","/code/mobile").permitAll()
                 .anyRequest().authenticated() // 所有进入应用的HTTP请求都要进行认证，授权
                 // 下面添加remember-me功能
                 .and()
