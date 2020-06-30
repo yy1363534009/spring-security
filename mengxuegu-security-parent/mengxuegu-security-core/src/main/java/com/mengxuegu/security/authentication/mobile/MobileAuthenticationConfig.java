@@ -12,6 +12,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.stereotype.Component;
 
 /**
+ * 组合手机验证码校验组件
  * @Auther: yuyue
  * @create 2020/6/30 14:16
  */
@@ -28,12 +29,17 @@ public class MobileAuthenticationConfig extends SecurityConfigurerAdapter<Defaul
     @Autowired
     private UserDetailsService mobileUserDetialsService;
 
-
+    /**
+     * 将自定义组件组合起来
+     * mobileAuthenticationProvider➡️AuthenticationManager
+     * @param http
+     * @throws Exception
+     */
     @Override
     public void configure(HttpSecurity http) throws Exception {
         //创建手机过滤器实例
         MobileAuthenticationFilter mobileAuthenticationFilter=new MobileAuthenticationFilter();
-        //接受AuthenticationManager认证管理器
+        //接受不了AuthenticationManager认证管理器
         mobileAuthenticationFilter.setAuthenticationManager(http.getSharedObject(AuthenticationManager.class));
         //采用那个成功失败处理器
         mobileAuthenticationFilter.setAuthenticationSuccessHandler(customAuthenticationSuccessHandler);

@@ -8,12 +8,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
- * 认证手机号，授权
+ * 认证手机号是否存在，且授权
  * @Auther: yuyue
  * @create 2020/6/29 16:55
  */
 public class MobileAuthenticationProvider implements AuthenticationProvider {
 
+    /*
+    封装了用户信息
+     */
     private UserDetailsService userDetailsService;
 
     /**

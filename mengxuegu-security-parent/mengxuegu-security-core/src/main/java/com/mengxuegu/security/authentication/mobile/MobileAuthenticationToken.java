@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.Collection;
 
 /**
+ * 封装用户手机号token
  * @Auther: yuyue
  * @create 2020/6/29 16:37
  */

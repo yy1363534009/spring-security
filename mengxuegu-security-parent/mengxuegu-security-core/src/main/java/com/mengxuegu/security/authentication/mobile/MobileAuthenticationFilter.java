@@ -11,6 +11,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
+ * 校验手机号过滤器
+ * 1 判断登录页面请求url及请求方法
+ * 2 获取用户输入的手机号信息
+ * 3 将用户信息封装为token
  * @Auther: yuyue
  * @create 2020/6/28 14:43
  */
@@ -44,12 +48,8 @@ public class MobileAuthenticationFilter extends AbstractAuthenticationProcessing
             mobile = "";
         }
 
-//        UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(
-//                username, password);
-
         MobileAuthenticationToken authRequest = new MobileAuthenticationToken(mobile);
 
-        // Allow subclasses to set the "details" property
         setDetails(request, authRequest);
 
         return this.getAuthenticationManager().authenticate(authRequest);
