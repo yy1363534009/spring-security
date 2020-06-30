@@ -1,6 +1,8 @@
 package com.mengxuegu.security.config;
 
 import com.mengxuegu.security.authentication.code.ImageCodeValidateFilter;
+import com.mengxuegu.security.authentication.mobile.MobileAuthenticationConfig;
+import com.mengxuegu.security.authentication.mobile.MobileValidaterFilter;
 import com.mengxuegu.security.properties.SecurityProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,8 +66,23 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private ImageCodeValidateFilter imageCodeValidateFilter;
 
+    /*
+    数据源
+     */
     @Autowired
     private DataSource dataSource;
+
+    /*
+    手机号校验过滤器
+     */
+    @Autowired
+    private MobileValidaterFilter mobileValidaterFilter;
+
+    /*
+    组合手机号认证配置管理器链
+     */
+    @Autowired
+    private MobileAuthenticationConfig mobileAuthenticationConfig;
 
     /**
      * 密码加密
@@ -79,6 +96,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
      * rememberMe保存用户信息到数据库
+     *
      * @return
      */
     @Bean
@@ -124,7 +142,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         //http.httpBasic() //httpBasic方式 模态框登录页面，无法自定义登录页面
-        http.addFilterBefore(imageCodeValidateFilter, UsernamePasswordAuthenticationFilter.class)//在用户名密码校验前加上徒刑验证码校验
+        http.addFilterBefore(mobileValidaterFilter, UsernamePasswordAuthenticationFilter.class)//在用户名密码校验前加上手机号校验
+                .addFilterBefore(imageCodeValidateFilter, UsernamePasswordAuthenticationFilter.class)//在用户名密码校验前加上图形验证码校验
                 .formLogin() //httpForm方式
                 .loginPage(securityProperties.getAuthentication().getLoginPage())//请求页面URL
                 .loginProcessingUrl(securityProperties.getAuthentication().getLoginProcessingUrl())//login.html表单的请求URL
@@ -135,7 +154,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests() // 认证请求
                 //放行/login/page,静态资源一同被拦截。否则出现一直重定向，放行验证码请求uri否则无法加载验证码图片
-                .antMatchers(securityProperties.getAuthentication().getLoginPage(), "/code/image","/mobile/page","/code/mobile").permitAll()
+                .antMatchers(securityProperties.getAuthentication().getLoginPage(), "/code/image", "/mobile/page", "/code/mobile").permitAll()
                 .anyRequest().authenticated() // 所有进入应用的HTTP请求都要进行认证，授权
                 // 下面添加remember-me功能
                 .and()
@@ -143,6 +162,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .tokenRepository(jdbcTokenRepository())//保存用户的登录信息到数据库
                 .tokenValiditySeconds(60 * 60 * 24 * 7)//记住我的有效时长（一周）
         ;
+        http.apply(mobileAuthenticationConfig);
     }
 
     /**
