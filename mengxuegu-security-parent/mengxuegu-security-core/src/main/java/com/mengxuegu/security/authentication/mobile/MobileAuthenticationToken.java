@@ -33,6 +33,7 @@ public class MobileAuthenticationToken  extends AbstractAuthenticationToken {
     手机号
      */
     public Object getCredentials() {
+
         return this.credentials;
     }
 
@@ -41,7 +42,7 @@ public class MobileAuthenticationToken  extends AbstractAuthenticationToken {
      * @return
      */
     public Object getPrincipal() {
-        return null;
+        return this.credentials;
     }
 
     public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
@@ -54,6 +55,5 @@ public class MobileAuthenticationToken  extends AbstractAuthenticationToken {
 
     public void eraseCredentials() {
         super.eraseCredentials();
-        this.credentials = null;
     }
 }

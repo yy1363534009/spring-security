@@ -50,6 +50,8 @@ public class MobileAuthenticationFilter extends AbstractAuthenticationProcessing
 
         mobile = mobile.trim();
 
+        System.out.println("MobileAuthenticationFilter mobile："+ mobile);
+
         MobileAuthenticationToken authRequest = new MobileAuthenticationToken(mobile);
 
         setDetails(request, authRequest);

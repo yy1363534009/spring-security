@@ -33,6 +33,7 @@ public class MobileAuthenticationProvider implements AuthenticationProvider {
         MobileAuthenticationToken mobileAuthenticationToken = (MobileAuthenticationToken) authentication;
         //获取MobileAuthenticationToken手机号
         String mobile = (String) mobileAuthenticationToken.getCredentials();
+        System.out.println("MobileAuthenticationProvider mobile："+ mobile);
         //根据手机号查询数据库，判断手机号是否存在
         UserDetails userDetails = userDetailsService.loadUserByUsername(mobile);
         if (userDetails==null) {
