@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
@@ -54,6 +55,19 @@ public class CustomLoginController {
         ServletOutputStream outputStream = response.getOutputStream();
         ImageIO.write(image, "jpg", outputStream);
 
+    }
+
+    @RequestMapping(value = "/exit/page")
+    public String toExit(HttpServletRequest request, HttpServletResponse response) {
+        Cookie[] cookies = request.getCookies();
+        for(Cookie cookie:cookies){
+            if (cookie.getName().equals("remember-me")) {
+                cookie.setMaxAge(0);
+                cookie.setPath("/");
+                response.addCookie(cookie);
+            }
+        }
+        return "login"; //classpth:/templates/login.html
     }
 
 }
