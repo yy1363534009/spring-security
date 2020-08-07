@@ -61,7 +61,7 @@ public class CustomLoginController {
     public String toExit(HttpServletRequest request, HttpServletResponse response) {
         Cookie[] cookies = request.getCookies();
         for(Cookie cookie:cookies){
-            if (cookie.getName().equals("remember-me")) {
+            if (cookie.getName().equals("remember-me") || cookie.getName().equals("JSESSIONID")) {
                 cookie.setMaxAge(0);
                 cookie.setPath("/");
                 response.addCookie(cookie);

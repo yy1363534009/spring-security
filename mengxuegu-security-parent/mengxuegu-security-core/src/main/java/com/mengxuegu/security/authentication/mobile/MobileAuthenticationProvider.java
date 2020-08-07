@@ -40,7 +40,7 @@ public class MobileAuthenticationProvider implements AuthenticationProvider {
         }
 
         //查询到了手机号，通过认证，重新构建MobileAuthenticationToken实例
-        MobileAuthenticationToken authenticationToken=new MobileAuthenticationToken(mobile,userDetails.getAuthorities());
+        MobileAuthenticationToken authenticationToken=new MobileAuthenticationToken(userDetails,userDetails.getAuthorities());
 
         authenticationToken.setDetails(mobileAuthenticationToken.getDetails());
 

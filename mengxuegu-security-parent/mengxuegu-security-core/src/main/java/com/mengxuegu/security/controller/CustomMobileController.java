@@ -2,7 +2,6 @@ package com.mengxuegu.security.controller;
 
 import com.mengxuegu.base.result.MengxueguResult;
 import com.mengxuegu.security.authentication.mobile.SmsSend;
-import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,6 +33,7 @@ public class CustomMobileController {
 
     /**
      * 发送手机验证码
+     *
      * @param request
      * @return
      */
@@ -41,7 +41,8 @@ public class CustomMobileController {
     @ResponseBody
     public MengxueguResult smsCode(HttpServletRequest request) {
         // 生成四位的手机验证码
-        String code = RandomStringUtils.randomNumeric(4);
+        //String code = RandomStringUtils.randomNumeric(4);
+        String code = "6666";
         // 将验证码保存到session中，用于后面校验在验证码
         request.getSession().setAttribute(SESSION_KEY, code);
         // 将验证码发送给用户手机

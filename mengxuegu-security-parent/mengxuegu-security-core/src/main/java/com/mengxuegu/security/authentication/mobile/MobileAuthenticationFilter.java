@@ -48,6 +48,8 @@ public class MobileAuthenticationFilter extends AbstractAuthenticationProcessing
             mobile = "";
         }
 
+        mobile = mobile.trim();
+
         MobileAuthenticationToken authRequest = new MobileAuthenticationToken(mobile);
 
         setDetails(request, authRequest);
